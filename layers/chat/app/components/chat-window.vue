@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IChat, IChatMessage } from '~/types';
+import type { IChat, IChatMessage } from '../types';
 
 const emit = defineEmits<{ (e: 'send-message', message: string): void }>();
 
@@ -17,11 +17,11 @@ watch(() => props.messages, pinToBottom, { deep: true });
 <template>
   <div
     ref="scroll-container-ref"
-    class="box-border h-full overflow-y-auto"
+    class="box-border h-full overflow-y-auto w-full"
   >
     <UContainer class="h-full max-w-3xl">
       <div class="flex items-center justify-between mb-6 px-0 py-4">
-        <h1 class="font-bold text-2xl text-[var(--ui-text)]">
+        <h1 class="font-bold text-2xl text-(--ui-text)">
           {{ chat?.title || 'Chat' }}
         </h1>
       </div>
@@ -29,13 +29,13 @@ watch(() => props.messages, pinToBottom, { deep: true });
       <div class="flex flex-col gap-4 overflow-y-auto mb-6 pb-32">
         <template v-for="message in messages" :key="message.id">
           <div
-            class="duration-200 p-4 rounded-[var(--ui-radius)] transition-all"
+            class="duration-200 p-4 rounded-(--ui-radius) transition-all"
             :class="{
-              'bg-[var(--ui-bg-muted) border border-solid border-[var(--ui-border)] self-end w-3/4': message.role === 'user',
+              'bg-(--ui-bg-muted) border border-solid border-(--ui-border) self-end w-3/4': message.role === 'user',
               'bg-none border-none px-0 py-4 w-full': message.role === 'assistant',
             }"
           >
-            <div class="break-words text-[var(--ui-text)] whitespace-pre-wrap">
+            <div class="break-words text-(--ui-text) whitespace-pre-wrap">
               <MarkdownRenderer :content="message.content" />
             </div>
           </div>
@@ -48,7 +48,7 @@ watch(() => props.messages, pinToBottom, { deep: true });
         </template>
       </div>
 
-      <div class="bottom-6 fixed max-w-3xl w-[calc(100%-3rem)] z-10">
+      <div class="bottom-6 fixed margin-auto max-w-3xl w-[calc(100%-3rem)] z-10">
         <div class="absolute bottom-[calc(100%+1rem)] flex justify-center left-0 pointer-events-none w-full">
           <template v-if="showScrollButton">
             <UButton

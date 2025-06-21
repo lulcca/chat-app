@@ -1,9 +1,11 @@
-import type { IChat, IChatMessage } from '~/types';
-import { MOCK_CHAT } from '~/composables/mock-data';
+import type { IChatMessage } from '../types';
 
-export default function () {
-  const chat = ref<IChat>(MOCK_CHAT);
-  const messages = computed<IChatMessage[]>(() => chat.value.messages);
+export default function (chatId: string) {
+  const { chats } = useChats();
+
+  const chat = computed(() => chats.value.find((c) => c.id === chatId));
+
+  const messages = computed<IChatMessage[]>(() => chat.value?.messages || []);
 
   function createMessage(message: string, role: IChatMessage['role']) {
     const id = messages.value.length.toString();
@@ -16,12 +18,16 @@ export default function () {
   }
 
   async function sendMessage(message: string) {
+    if (!chat.value) return;
+
     messages.value.push(createMessage(message, 'user'));
 
     const data = await $fetch<IChatMessage>('/api/ai', {
       body: { messages: messages.value },
       method: 'POST',
     });
+
+    chat.value.updatedAt = new Date();
 
     messages.value.push(data);
   }

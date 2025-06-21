@@ -39,7 +39,7 @@ watch(() => isStreaming, async (value: boolean) => {
 
 <template>
   <form
-    class="bg-[var(--ui-bg)] border border-solid border-[var(--ui-border)] ease-in-out flex items-center focus-within:transform-none hover:outline-none hover:shadow-lg hover:transform-none justify-center overflow-hidden px-6 py-4 relative rounded-3xl transition-all"
+    class="bg-(--ui-bg) border border-solid border-(--ui-border) ease-in-out flex items-center focus-within:transform-none hover:outline-none hover:shadow-lg hover:transform-none justify-center overflow-hidden px-6 py-4 relative rounded-3xl transition-all"
     @submit.prevent="handleSendMessage"
   >
     <textarea

@@ -1,4 +1,4 @@
-import { createOpenAIModel, generateChatResponse } from '~~/server/services/ai-service';
+import { createOpenAIModel, generateChatResponse } from '../services/ai-service';
 
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event);

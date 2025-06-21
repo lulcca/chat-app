@@ -1,0 +1,33 @@
+@import "tailwindcss" theme(static);
+@plugin "@tailwindcss/typography";
+@import "@nuxt/ui";
+
+@source '../../../../';
+
+@theme {
+  --font-sans: Inter, system-ui, sans-serif;
+}
+
+:root {
+  --ui-bg: var(--color-gray-950);
+  --ui-bg-accented: var(--color-gray-700);
+  --ui-bg-elevated: var(--color-gray-800);
+  --ui-bg-inverted: var(--color-white);
+  --ui-bg-muted: var(--color-gray-900);
+
+  --ui-border: var(--color-gray-800);
+  --ui-border-muted: var(--color-gray-800);
+  --ui-border-accented: var(--color-gray-700);
+  --ui-border-inverted: var(--color-white);
+
+  --ui-container: var(--container-6xl);
+
+  --ui-primary: var(--color-pink-300);
+
+  --ui-radius: var(--radius-sm);
+
+  --ui-text: var(--color-gray-100);
+  --ui-text-muted: var(--color-gray-200);
+  --ui-text-dimmed: var(--color-gray-400);
+  --ui-text-highlighted: var(--color-white);
+}
