@@ -14,3 +14,21 @@ export async function generateChatResponse(model: LanguageModelV1, messages: Mes
 
   return response.text.trim();
 }
+
+export async function generateChatTitle(model: LanguageModelV1, firstMessage: string) {
+  const response = await generateText({
+    messages: [
+      {
+        content: 'Summarize the message in 3 or less short worlds.',
+        role: 'system',
+      },
+      {
+        content: firstMessage,
+        role: 'user',
+      },
+    ],
+    model,
+  });
+
+  return response.text.trim();
+}
