@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { IChat } from '~~/layers/chat/app/types';
-
 const route = useRoute();
 
 const { title: appTitle } = useAppConfig();

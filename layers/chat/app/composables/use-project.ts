@@ -1,5 +1,3 @@
-import type { IProject } from '../types';
-
 export default function (projectId: string) {
   const { projects } = useProjects();
 

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { IChat, IChatMessage } from '../types';
-
 const emit = defineEmits<{ (e: 'send-message', message: string): void }>();
 
 const props = defineProps<{

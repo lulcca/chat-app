@@ -1,6 +1,3 @@
-import type { IProject } from '../types';
-import { MOCK_PROJECT } from '../composables/mock-data';
-
 export default function () {
   const projects = useState<IProject[]>('projects', () => [MOCK_PROJECT]);
 
@@ -8,8 +5,10 @@ export default function () {
     const id = (projects.value.length + 1).toString();
 
     const project = {
+      createdAt: new Date(),
       id,
       name: 'New Project',
+      updatedAt: new Date(),
     };
 
     projects.value.push(project);

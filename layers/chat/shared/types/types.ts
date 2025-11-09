@@ -1,7 +1,9 @@
 export interface IChatMessage {
   content: string;
+  createdAt: Date;
   id: string;
   role: 'user'|'assistant';
+  updatedAt: Date;
 }
 
 export interface IChat {
@@ -14,6 +16,12 @@ export interface IChat {
 }
 
 export interface IProject {
+  createdAt: Date;
   id: string;
   name: string;
+  updatedAt: Date;
+}
+
+export interface IProjectChat extends IChat {
+  project: IProject | null;
 }

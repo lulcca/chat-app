@@ -1,5 +1,3 @@
-import type { IChatMessage } from '../types';
-
 export default function (chatId: string) {
   const { chats } = useChats();
 
@@ -12,8 +10,10 @@ export default function (chatId: string) {
 
     return {
       content: message,
+      createdAt: new Date(),
       id,
       role,
+      updatedAt: new Date(),
     };
   }
 

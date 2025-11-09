@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { IChat } from '../../types';
-
 const route = useRoute();
 
 const { chat: chatFromChats, messages, sendMessage } = useChat(route.params.chatId as string);

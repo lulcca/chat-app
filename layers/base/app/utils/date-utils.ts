@@ -1,5 +1,3 @@
-import type { IChat } from '~~/layers/chat/app/types';
-
 export function filterChatsByDateRange(chats: IChat[], startDays: number, endDays?: number) {
   return chats
     .filter((chat) => {
