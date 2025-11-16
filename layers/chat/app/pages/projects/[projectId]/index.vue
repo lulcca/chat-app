@@ -3,7 +3,7 @@ const route = useRoute();
 
 const { chatsInProject } = useChats();
 
-const chats = chatsInProject(route.params.projectId as string);
+const chats = computed(() => chatsInProject(route.params.projectId as string));
 </script>
 
 <template>

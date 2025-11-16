@@ -19,7 +19,7 @@ export async function generateChatTitle(model: LanguageModelV1, firstMessage: st
   const response = await generateText({
     messages: [
       {
-        content: 'Summarize the message in 3 or less short worlds.',
+        content: 'You are a helpful assistant that generates concise, descriptive titles for chat conversations. Generate a title that captures the essence of the first message in 3 short words or less.',
         role: 'system',
       },
       {

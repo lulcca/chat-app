@@ -2,7 +2,9 @@
 const route = useRoute();
 
 const { title: appTitle } = useAppConfig();
-const { chat: chatFromChats, messages, sendMessage } = useChat(route.params.chatId as string);
+const { chat: chatFromChats, fetchMessages, messages, sendMessage } = useChat(route.params.chatId as string);
+
+await fetchMessages();
 
 if (!chatFromChats.value) await navigateTo(`/projects/${route.params.projectId}`, { replace: true });
 

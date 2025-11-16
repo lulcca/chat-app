@@ -6,15 +6,14 @@ export default function (projectId: string) {
   async function updateProject(updatedProject: Partial<IProject>) {
     if (!project.value) return;
 
-    const index = projects.value.findIndex((p) => p.id === projectId);
+    const response = await $fetch<IProject>(`/api/projects/${projectId}`, {
+      body: {
+        ...updatedProject,
+      },
+      method: 'PUT',
+    });
 
-    if (index === -1) return;
-
-    projects.value[index] = {
-      ...project.value,
-      ...updatedProject,
-      id: projectId,
-    };
+    projects.value = projects.value.map((p) => p.id === projectId ? { ...p, ...response } : p);
   }
 
   return {

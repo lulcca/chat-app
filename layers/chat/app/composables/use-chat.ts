@@ -5,35 +5,55 @@ export default function (chatId: string) {
 
   const messages = computed<IChatMessage[]>(() => chat.value?.messages || []);
 
-  function createMessage(message: string, role: IChatMessage['role']) {
-    const id = messages.value.length.toString();
+  const { data, execute, status } = useFetch<IChatMessage[]>(`/api/chats/${chatId}/messages`, {
+    default: () => [],
+    immediate: false,
+  });
 
-    return {
-      content: message,
-      createdAt: new Date(),
-      id,
-      role,
-      updatedAt: new Date(),
-    };
+  async function fetchMessages() {
+    if (status.value !== 'idle' || !chat.value) return;
+    await execute();
+    chat.value.messages = data.value;
+  }
+
+  async function generateChatTitle(message: string) {
+    if (!chat.value) return;
+
+    const updated_chat = await $fetch<IChat>(`/api/chats/${chatId}/title`, {
+      body: { message },
+      method: 'POST',
+    });
+
+    chat.value.title = updated_chat.title;
   }
 
   async function sendMessage(message: string) {
     if (!chat.value) return;
 
-    messages.value.push(createMessage(message, 'user'));
+    if (messages.value.length === 0 ) generateChatTitle(message);
 
-    const data = await $fetch<IChatMessage>('/api/ai', {
-      body: { messages: messages.value },
+    const new_message = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages`, {
+      body: {
+        content: message,
+        role: 'user',
+      },
       method: 'POST',
     });
 
-    chat.value.updatedAt = new Date();
+    messages.value.push(new_message);
 
-    messages.value.push(data);
+    const ai_response = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages/generate`, {
+      method: 'POST',
+    });
+
+    messages.value.push(ai_response);
+
+    chat.value.updatedAt = new Date();
   }
 
   return {
     chat,
+    fetchMessages,
     messages,
     sendMessage,
   };

@@ -8,7 +8,7 @@ export async function createProject(data: { name: string }): Promise<IProject> {
   const new_project: IProject = {
     createdAt: now,
     id: uuidv4(),
-    name: data.name,
+    name: data.name || 'New Project',
     updatedAt: now,
   };
 
@@ -51,7 +51,7 @@ export async function updateProject(id: string, data: { name: string }): Promise
 }
 
 export function getAllProjects(): IProject[] {
-  return [...projects].sort((a, b) => a.name.localeCompare(b.name));
+  return [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 }
 
 export function getProjectById(id: string): IProject | null {
