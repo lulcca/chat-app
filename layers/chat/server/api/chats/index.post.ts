@@ -1,7 +1,12 @@
+import { CreateChatSchema } from '~~/layers/chat/server/schemas';
 import { createChat } from '~~/layers/chat/server/repository/chat-repository';
 
 export default defineEventHandler(async (event) => {
-  const { projectId, title } = await readBody(event);
+  const { success, data } = await readValidatedBody(event, CreateChatSchema.safeParse);
+
+  if (!success) return 400;
+
+  const { projectId, title } = data;
 
   const storage = useStorage('db');
 

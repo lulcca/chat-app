@@ -1,7 +1,10 @@
+import { CreateProjectSchema } from '~~/layers/chat/server/schemas';
 import { createProject } from '~~/layers/chat/server/repository/project-repository';
 
 export default defineEventHandler(async (event) => {
-  const { name } = await readBody(event);
+  const { success, data } = await readValidatedBody(event, CreateProjectSchema.safeParse);
 
-  return createProject({ name });
+  if (!success) return 400;
+
+  return createProject(data);
 });

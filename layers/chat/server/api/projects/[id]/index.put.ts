@@ -1,13 +1,16 @@
 import { getProjectById, updateProject } from '~~/layers/chat/server/repository/project-repository';
+import { UpdateProjectSchema } from '~~/layers/chat/server/schemas';
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
 
-  const project = getProjectById(id);
+  const { success, data } = await readValidatedBody(event, UpdateProjectSchema.safeParse);
 
-  if (!project) return null;
+  const project = await getProjectById(id);
 
-  const body = await readBody(event);
+  if (!project) return 404;
 
-  return updateProject(id, { name: body.name });
+  if (!success) return 400;
+
+  return updateProject(id, data);
 });

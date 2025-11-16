@@ -1,7 +1,12 @@
 import { createOpenAIModel, generateChatResponse } from '../services/ai-service';
+import { ChatMessageSchema } from '~~/layers/chat/server/schemas';
 
 export default defineEventHandler(async (event) => {
-  const { messages } = await readBody(event);
+  const { success, data } = await readValidatedBody(event, ChatMessageSchema.safeParse);
+
+  if (!success) return 400;
+
+  const { messages } = data as { chatId: string, messages: IChatMessage[] };
 
   const { openaiApiKey } = useRuntimeConfig();
 
