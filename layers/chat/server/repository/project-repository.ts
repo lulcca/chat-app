@@ -1,6 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 
-const projects: IProject[] = [MOCK_PROJECT];
+const projects_key = 'projects:all';
+
+const storage = useStorage<IProject[]>('db');
+
+async function getProjects(): Promise<IProject[]> {
+  let projects = await storage.getItem(projects_key);
+
+  if (projects === null) {
+    projects = [MOCK_PROJECT];
+
+    await saveProjects(projects);
+  }
+
+  return projects;
+}
+
+async function saveProjects(projects: IProject[]): Promise<void> {
+  await storage.setItem(projects_key, projects);
+}
 
 export async function createProject(data: { name: string }): Promise<IProject> {
   const now = new Date();
@@ -12,16 +30,24 @@ export async function createProject(data: { name: string }): Promise<IProject> {
     updatedAt: now,
   };
 
+  const projects = await getProjects();
+
   projects.push(new_project);
+
+  await saveProjects(projects);
 
   return new_project;
 }
 
 export async function deleteProject(id: string): Promise<boolean> {
+  const projects = await getProjects();
+
   const index = projects.findIndex(project => project.id === id);
 
   if (index !== -1) {
     projects.splice(index, 1);
+
+    await saveProjects(projects);
 
     return true;
   }
@@ -29,7 +55,21 @@ export async function deleteProject(id: string): Promise<boolean> {
   return false;
 }
 
+export async function getAllProjects(): Promise<IProject[]> {
+  const projects = await getProjects();
+
+  return [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+}
+
+export async function getProjectById(id: string): Promise<IProject | null> {
+  const projects = await getProjects();
+
+  return projects.find((p) => p.id === id) || null;
+}
+
 export async function updateProject(id: string, data: { name: string }): Promise<IProject | null> {
+  const projects = await getProjects();
+
   const project_index = projects.findIndex(p => p.id === id);
 
   if (project_index === -1) return null;
@@ -47,13 +87,7 @@ export async function updateProject(id: string, data: { name: string }): Promise
 
   projects[project_index] = updated_project;
 
+  await saveProjects(projects);
+
   return updated_project;
-}
-
-export function getAllProjects(): IProject[] {
-  return [...projects].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-}
-
-export function getProjectById(id: string): IProject | null {
-  return projects.find((p) => p.id === id) || null;
 }

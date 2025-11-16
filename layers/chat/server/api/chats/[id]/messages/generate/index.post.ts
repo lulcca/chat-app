@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const { openaiApiKey } = useRuntimeConfig();
 
-  const history = getMessagesByChatId(id);
+  const history = await getMessagesByChatId(id);
 
   const openai = createOpenAIModel(openaiApiKey);
 
