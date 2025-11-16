@@ -49,7 +49,7 @@ function startEditing() {
 </script>
 
 <template>
-  <div class="h-[calc(100%-4rem)] p-4">
+  <div class="flex flex-col h-[calc(100%-4rem)] p-4">
     <template v-if="project">
       <div class="border-b border-b-[color:var(--ui-border)] border-solid flex items-start justify-between mb-6 pb-4">
         <div class="header-left">

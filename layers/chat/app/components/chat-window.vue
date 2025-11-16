@@ -15,12 +15,12 @@ watch(() => props.messages, pinToBottom, { deep: true });
 <template>
   <div
     ref="scroll-container-ref"
-    class="box-border h-full overflow-y-auto w-full"
+    class="box-border flex-auto min-h-0 overflow-y-auto w-full"
   >
     <UContainer class="h-full max-w-3xl">
       <div class="flex items-center justify-between mb-6 px-0 py-4">
         <h1 class="font-bold text-2xl text-(--ui-text)">
-          {{ chat?.title || 'Chat' }}
+          <TypewriterText :text="chat?.title || 'Chat'" />
         </h1>
       </div>
 
