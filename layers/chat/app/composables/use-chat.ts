@@ -34,15 +34,35 @@ export default function (chatId: string) {
 
     if (messages.value.length === 0 ) generateChatTitle(message);
 
-    const new_message = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages`, {
-      body: {
-        content: message,
-        role: 'user',
-      },
-      method: 'POST',
-    });
+    const optimistic_user_message: IChatMessage = {
+      content: message,
+      createdAt: new Date(),
+      id: `optimistic_user_message-${Date.now()}`,
+      role: 'user',
+      updatedAt: new Date(),
+    };
 
-    messages.value.push(new_message);
+    messages.value.push(optimistic_user_message);
+
+    const user_message_index = messages.value.length - 1;
+
+    try {
+      const new_message = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages`, {
+        body: {
+          content: message,
+          role: 'user',
+        },
+        method: 'POST',
+      });
+
+      messages.value[user_message_index] = new_message;
+    } catch (error) {
+      console.error('Error sendind user message:', error);
+
+      messages.value.splice(user_message_index, 1);
+
+      return;
+    }
 
     messages.value.push({
       content: '',
