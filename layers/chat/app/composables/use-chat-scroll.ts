@@ -8,7 +8,8 @@ export default function () {
   async function pinToBottom() {
     if (isAtBottom.value) {
       if (scrollContainer.value) {
-        await nextTick();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight;
       }
     }
@@ -67,9 +68,7 @@ export default function () {
     if (scrollContainer.value) scrollContainer.value.removeEventListener('scroll', checkScrollPosition);
   });
 
-  onUpdated(() => {
-    checkScrollPosition();
-  });
+  onUpdated(() => checkScrollPosition());
 
   return {
     isAtBottom,

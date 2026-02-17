@@ -10,9 +10,11 @@ export default function (chatId: string) {
     immediate: false,
   });
 
-  async function fetchMessages() {
-    if (status.value !== 'idle' || !chat.value) return;
+  async function fetchMessages(refresh = false) {
+    if ((!refresh && status.value !== 'idle') || !chat.value) return;
+
     await execute();
+
     chat.value.messages = data.value;
   }
 
@@ -42,11 +44,41 @@ export default function (chatId: string) {
 
     messages.value.push(new_message);
 
-    const ai_response = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages/generate`, {
-      method: 'POST',
+    messages.value.push({
+      content: '',
+      createdAt: new Date(),
+      id: `streaming-message-${Date.now()}`,
+      role: 'assistant',
+      updatedAt: new Date(),
     });
 
-    messages.value.push(ai_response);
+    const last_message = messages.value[messages.value.length - 1] as IChatMessage;
+
+    try {
+      const response = await $fetch<ReadableStream>(`/api/chats/${chatId}/messages/stream`, {
+        body: {
+          messages: messages.value,
+        },
+        method: 'POST',
+        responseType: 'stream',
+      });
+
+      const decoded_stream = response.pipeThrough(new TextDecoderStream());
+
+      const reader = decoded_stream.getReader();
+
+      await reader.read().then(function processText({ done, value }): Promise<void> | void {
+        if (done) return;
+
+        last_message.content += value;
+
+        return reader.read().then(processText);
+      });
+    } catch (error) {
+      console.error('Error streaming message:', error);
+    } finally {
+      await fetchMessages(true);
+    }
 
     chat.value.updatedAt = new Date();
   }
