@@ -38,6 +38,12 @@ export const CreateProjectSchema = z
   })
   .strict();
 
+export const UpdateChatSchema = z
+  .object({
+    projectId: z.uuid(),
+  })
+  .strict();
+
 export const UpdateChatTitleSchema = z
   .object({
     message: z.string().min(1),

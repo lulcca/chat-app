@@ -10,6 +10,37 @@ export default function (chatId: string) {
     immediate: false,
   });
 
+  async function assignToProject(projectId: string | null) {
+    if (!chat.value) return;
+
+    const originalProjectId = chat.value.projectId;
+
+    chat.value.projectId = projectId || undefined;
+
+    try {
+      const updatedChat = await $fetch<IChat>(`/api/chats/${chatId}`, {
+        body: {
+          projectId,
+        },
+        method: 'PUT',
+      });
+
+      const chatIndex = chats.value.findIndex(c => c.id === chatId);
+
+      if (chatIndex !== -1 && chats.value[chatIndex]) {
+        chats.value[chatIndex].projectId = updatedChat.projectId;
+
+        chats.value[chatIndex].updatedAt = updatedChat.updatedAt;
+      }
+    } catch (error) {
+      console.error('Error assigning chat to project:', error);
+
+      chat.value.projectId = originalProjectId;
+
+      throw error;
+    }
+  }
+
   async function fetchMessages(refresh = false) {
     const hasExistingMessages = messages.value.length > 1;
 
@@ -110,6 +141,7 @@ export default function (chatId: string) {
   }
 
   return {
+    assignToProject,
     chat,
     fetchMessages,
     messages,

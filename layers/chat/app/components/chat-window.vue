@@ -9,6 +9,16 @@ const props = defineProps<{
 
 const { pinToBottom, showScrollButton, scrollToBottom } = useChatScroll();
 
+const route = useRoute();
+
+const isOnProjectPage = computed(() => !!route.params.projectId);
+
+const isAssignModalOpen = ref(false);
+
+function toggleAssignModal() {
+  isAssignModalOpen.value = !isAssignModalOpen.value;
+}
+
 watch(() => props.messages, pinToBottom, { deep: true });
 </script>
 
@@ -22,6 +32,18 @@ watch(() => props.messages, pinToBottom, { deep: true });
         <h1 class="font-bold text-2xl text-(--ui-text)">
           <TypewriterText :text="chat?.title || 'Chat'" />
         </h1>
+
+        <template v-if="!isOnProjectPage">
+          <UButton
+            color="neutral"
+            icon="i-heroicons-folder-plus"
+            size="sm"
+            variant="soft"
+            @click="toggleAssignModal"
+          >
+            Assign to Project
+          </UButton>
+        </template>
       </div>
 
       <div class="flex flex-col gap-4 overflow-y-auto mb-6 pb-32">
@@ -62,5 +84,12 @@ watch(() => props.messages, pinToBottom, { deep: true });
         <ChatInput @send-message="(message) => emit('send-message', message)" />
       </div>
     </UContainer>
+
+    <template v-if="isAssignModalOpen">
+      <LazyAssignToProjectModal
+        :chat-id="chat.id"
+        @close="toggleAssignModal"
+      />
+    </template>
   </div>
 </template>
