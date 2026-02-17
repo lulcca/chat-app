@@ -11,7 +11,13 @@ export default function (chatId: string) {
   });
 
   async function fetchMessages(refresh = false) {
-    if ((!refresh && status.value !== 'idle') || !chat.value) return;
+    const hasExistingMessages = messages.value.length > 1;
+
+    const isRequestInProgress = status.value !== 'idle';
+
+    const shouldSkip = !refresh && (hasExistingMessages || isRequestInProgress);
+
+    if (shouldSkip || !chat.value) return;
 
     await execute();
 
