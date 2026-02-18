@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const { success, data } = await readValidatedBody(event, UpdateChatSchema.safeParse);
 
-  if (!success) return 400;
+  if (!success) throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
 
   const storage = useStorage('db');
 

@@ -4,7 +4,7 @@ import { createChat } from '~~/layers/chat/server/repository/chat-repository';
 export default defineEventHandler(async (event) => {
   const { success, data } = await readValidatedBody(event, CreateChatSchema.safeParse);
 
-  if (!success) return 400;
+  if (!success) throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
 
   const { projectId, title } = data;
 

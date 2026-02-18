@@ -4,7 +4,7 @@ import { createProject } from '~~/layers/chat/server/repository/project-reposito
 export default defineEventHandler(async (event) => {
   const { success, data } = await readValidatedBody(event, CreateProjectSchema.safeParse);
 
-  if (!success) return 400;
+  if (!success) throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
 
   return createProject(data);
 });

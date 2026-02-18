@@ -15,6 +15,10 @@ const title = computed(() => chat.value?.title ? `${chat.value.title} | ${appCon
 
 const typing = ref(false);
 
+async function handleError() {
+  await navigateTo('/', { replace: true });
+}
+
 async function handleSendMessage(message: string) {
   typing.value = true;
   await sendMessage(message);
@@ -25,11 +29,38 @@ useHead({ title });
 </script>
 
 <template>
-  <ChatWindow
-    v-if="chat"
-    :chat
-    :messages
-    :typing
-    @send-message="(m) => handleSendMessage(m)"
-  />
+  <div class="flex flex-col h-full">
+    <NuxtErrorBoundary>
+      <ChatWindow
+        :chat
+        :messages
+        :typing
+        @send-message="(m) => handleSendMessage(m)"
+      />
+
+      <template #error="{ error }">
+        <UContainer class="flex h-full items-center justify-center p-4">
+          <UCard
+            class="min-w-md"
+            variant="soft"
+          >
+            <template #header>
+              <h1 class="font-bold text-lg">
+                {{ error }}
+              </h1>
+            </template>
+
+            <UButton
+              color="primary"
+              variant="soft"
+              icon="i-heroicons-arrow-left"
+              @click="handleError"
+            >
+              Go back home
+            </UButton>
+          </UCard>
+        </UContainer>
+      </template>
+    </NuxtErrorBoundary>
+  </div>
 </template>
