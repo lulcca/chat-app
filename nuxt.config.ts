@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxt/eslint',
+    '@nuxt/image',
   ],
   nitro: {
     storage: {
