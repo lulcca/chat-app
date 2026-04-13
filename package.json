@@ -33,5 +33,8 @@
     "@nuxtjs/mdc": "^0.16.1",
     "@types/node": "^25.6.0",
     "tsx": "^4.21.0"
+  },
+  "prisma": {
+    "seed": "pnpm dlx tsx prisma/seed.ts"
   }
 }
