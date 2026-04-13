@@ -1,7 +1,7 @@
 export default function () {
-  const chats = useState<IChat[]>('chats', () => [MOCK_CHAT]);
+  const chats = useState<IChatWithMessages[]>('chats', () => []);
 
-  const { data, execute, status } = useFetch<IChat[]>('/api/chats', {
+  const { data, execute, status } = useFetch<IChatWithMessages[]>('/api/chats', {
     default: () => [],
     immediate: false,
   });
@@ -17,7 +17,7 @@ export default function () {
   }
 
   async function createChat(options: { projectId?: string, title?: string } = {}) {
-    const new_chat = await $fetch<IChat>('/api/chats', {
+    const new_chat = await $fetch<IChatWithMessages>('/api/chats', {
       body: {
         projectId: options.projectId,
         title: options.title,
@@ -41,7 +41,7 @@ export default function () {
 
     await Promise.all(recentChats.map(async (chat) => {
       try {
-        const messages = await $fetch<IChatMessage[]>(`/api/chats/${chat.id}/messages`);
+        const messages = await $fetch<IMessage[]>(`/api/chats/${chat.id}/messages`);
 
         const targetChat = chats.value.find(c => c.id === chat.id);
 

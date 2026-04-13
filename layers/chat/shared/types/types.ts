@@ -1,27 +1,38 @@
-export interface IChatMessage {
-  content: string;
-  createdAt: Date;
-  id: string;
-  role: 'user'|'assistant';
-  updatedAt: Date;
-}
+import type {
+  Prisma,
+  Chat as PrismaChat,
+  Message as PrismaMessage,
+  MessageRole as PrismaMessageRole,
+  Project as PrismaProject,
+} from '@prisma/client';
 
-export interface IChat {
-  createdAt: Date;
-  id: string;
-  messages: IChatMessage[];
-  projectId?: string;
-  title: string;
-  updatedAt: Date;
-}
+export type IChat = PrismaChat;
 
-export interface IProject {
-  createdAt: Date;
-  id: string;
-  name: string;
-  updatedAt: Date;
-}
+export type IChatWithMessages = Prisma.ChatGetPayload<{
+  include: {
+    messages: true;
+    project: true;
+  }
+}>;
 
-export interface IProjectChat extends IChat {
-  project: IProject | null;
-}
+export type IMessage = PrismaMessage;
+
+export type IMessageRole = PrismaMessageRole;
+
+export type IMessageWithChat = Prisma.MessageGetPayload<{
+  include: {
+    chat: true;
+  }
+}>;
+
+export type IProject = PrismaProject;
+
+export type IProjectWithChats = Prisma.ProjectGetPayload<{
+  include: {
+    chats: {
+      include: {
+        messages: true;
+      }
+    }
+  }
+}>;

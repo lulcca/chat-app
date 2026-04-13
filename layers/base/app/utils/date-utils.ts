@@ -1,4 +1,4 @@
-export function filterChatsByDateRange(chats: IChat[], startDays: number, endDays?: number) {
+export function filterChatsByDateRange(chats: IChatWithMessages[], startDays: number, endDays?: number) {
   return chats
     .filter((chat) => {
       const date = new Date(chat.updatedAt);

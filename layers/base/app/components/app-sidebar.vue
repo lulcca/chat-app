@@ -10,7 +10,7 @@ const { projects, createProject } = useProjects();
 
 const chatsInCurrentProject = computed(() => chatsInProject(route.params.projectId as string));
 
-const chatsWithoutProject = computed(() => chats.value.filter((c) => c.projectId === undefined));
+const chatsWithoutProject = computed(() => chats.value.filter((c) => c.projectId === null));
 
 const chatsToday = filterChats(-1, 1);
 const chatsLastWeek = filterChats(1, 7);
@@ -27,7 +27,7 @@ const sideBarChats = computed(() => [
 ]);
 
 async function handleCreateProject() {
-  const newProject = createProject();
+  const newProject = await createProject();
 
   await createChatAndNavigate({ projectId: newProject.id });
 }
@@ -42,7 +42,7 @@ function filterChats(startDays: number, endDays?: number) {
   });
 }
 
-function formatChatItem(chat: IChat): NavigationMenuItem {
+function formatChatItem(chat: IChatWithMessages): NavigationMenuItem {
   return {
     active: route.params.chatId === chat.id,
     label: chat.title || 'Untitled Chat',
@@ -50,7 +50,7 @@ function formatChatItem(chat: IChat): NavigationMenuItem {
   };
 }
 
-function formatProjectChat(project: IProject, chat: IChat): NavigationMenuItem {
+function formatProjectChat(project: IProject, chat: IChatWithMessages): NavigationMenuItem {
   return {
     active: route.params.chatId === chat.id,
     label: chat.title || 'Untitled Chat',

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   if (!success) throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
 
-  const { messages } = data as { chatId: string, messages: IChatMessage[] };
+  const { messages } = data as { chatId: string, messages: IMessage[] };
 
   const { openaiApiKey } = useRuntimeConfig();
 
