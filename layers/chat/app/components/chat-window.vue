@@ -2,8 +2,8 @@
 const emit = defineEmits<{ (e: 'send-message', message: string): void }>();
 
 const props = defineProps<{
-  chat: IChat,
-  messages: IChatMessage[],
+  chat: IChatWithMessages,
+  messages: IMessage[],
   typing: boolean,
 }>();
 
@@ -56,7 +56,10 @@ watch(() => props.messages, pinToBottom, { deep: true });
             }"
           >
             <div class="break-words text-(--ui-text) whitespace-pre-wrap">
-              <MarkdownRenderer :content="message.content" />
+              <MarkdownRenderer
+                :cache-key="message.id"
+                :content="message.content"
+              />
             </div>
           </div>
         </template>

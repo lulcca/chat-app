@@ -3,9 +3,9 @@ export default function (chatId: string) {
 
   const chat = computed(() => chats.value.find((c) => c.id === chatId));
 
-  const messages = computed<IChatMessage[]>(() => chat.value?.messages || []);
+  const messages = computed<IMessage[]>(() => chat.value?.messages || []);
 
-  const { data, execute, status } = useFetch<IChatMessage[]>(`/api/chats/${chatId}/messages`, {
+  const { data, execute, status } = useFetch<IMessage[]>(`/api/chats/${chatId}/messages`, {
     default: () => [],
     immediate: false,
   });
@@ -15,10 +15,10 @@ export default function (chatId: string) {
 
     const originalProjectId = chat.value.projectId;
 
-    chat.value.projectId = projectId || undefined;
+    chat.value.projectId = projectId || null;
 
     try {
-      const updatedChat = await $fetch<IChat>(`/api/chats/${chatId}`, {
+      const updatedChat = await $fetch<IChatWithMessages>(`/api/chats/${chatId}`, {
         body: {
           projectId,
         },
@@ -58,7 +58,7 @@ export default function (chatId: string) {
   async function generateChatTitle(message: string) {
     if (!chat.value) return;
 
-    const updated_chat = await $fetch<IChat>(`/api/chats/${chatId}/title`, {
+    const updated_chat = await $fetch<IChatWithMessages>(`/api/chats/${chatId}/title`, {
       body: { message },
       method: 'POST',
     });
@@ -71,7 +71,8 @@ export default function (chatId: string) {
 
     if (messages.value.length === 0 ) generateChatTitle(message);
 
-    const optimistic_user_message: IChatMessage = {
+    const optimistic_user_message: IMessage = {
+      chatId,
       content: message,
       createdAt: new Date(),
       id: `optimistic_user_message-${Date.now()}`,
@@ -84,7 +85,7 @@ export default function (chatId: string) {
     const user_message_index = messages.value.length - 1;
 
     try {
-      const new_message = await $fetch<IChatMessage>(`/api/chats/${chatId}/messages`, {
+      const new_message = await $fetch<IMessage>(`/api/chats/${chatId}/messages`, {
         body: {
           content: message,
           role: 'user',
@@ -102,6 +103,7 @@ export default function (chatId: string) {
     }
 
     messages.value.push({
+      chatId,
       content: '',
       createdAt: new Date(),
       id: `streaming-message-${Date.now()}`,
@@ -109,7 +111,7 @@ export default function (chatId: string) {
       updatedAt: new Date(),
     });
 
-    const last_message = messages.value[messages.value.length - 1] as IChatMessage;
+    const last_message = messages.value[messages.value.length - 1] as IMessage;
 
     try {
       const response = await $fetch<ReadableStream>(`/api/chats/${chatId}/messages/stream`, {

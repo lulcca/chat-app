@@ -7,7 +7,7 @@ await fetchMessages();
 
 if (!chatFromChats.value) await navigateTo('/', { replace: true });
 
-const chat = computed(() => chatFromChats.value as IChat);
+const chat = computed(() => chatFromChats.value as IChatWithMessages);
 
 const appConfig = useAppConfig();
 

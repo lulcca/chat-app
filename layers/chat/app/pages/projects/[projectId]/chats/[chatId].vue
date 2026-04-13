@@ -8,7 +8,7 @@ await fetchMessages();
 
 if (!chatFromChats.value) await navigateTo(`/projects/${route.params.projectId}`, { replace: true });
 
-const chat = computed(() => chatFromChats.value as IChat);
+const chat = computed(() => chatFromChats.value as IChatWithMessages);
 
 const title = computed(() => chat.value?.title ? `${chat.value.title} - ${appTitle}` : appTitle );
 
