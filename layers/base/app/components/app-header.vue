@@ -26,8 +26,12 @@ const { createChatAndNavigate } = useChats();
       </UButton>
     </div>
 
-    <div class="text-2xl font-semibold">
+    <div class="font-semibold text-2xl">
       {{ title }}
+    </div>
+
+    <div>
+      <ProfileMenu />
     </div>
   </header>
 </template>

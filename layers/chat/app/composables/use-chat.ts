@@ -7,6 +7,7 @@ export default function (chatId: string) {
 
   const { data, execute, status } = useFetch<IMessage[]>(`/api/chats/${chatId}/messages`, {
     default: () => [],
+    headers: useRequestHeaders(['cookie']),
     immediate: false,
   });
 
@@ -22,6 +23,7 @@ export default function (chatId: string) {
         body: {
           projectId,
         },
+        headers: useRequestHeaders(['cookie']),
         method: 'PUT',
       });
 
@@ -60,6 +62,7 @@ export default function (chatId: string) {
 
     const updated_chat = await $fetch<IChatWithMessages>(`/api/chats/${chatId}/title`, {
       body: { message },
+      headers: useRequestHeaders(['cookie']),
       method: 'POST',
     });
 
@@ -90,6 +93,7 @@ export default function (chatId: string) {
           content: message,
           role: 'user',
         },
+        headers: useRequestHeaders(['cookie']),
         method: 'POST',
       });
 
@@ -118,6 +122,7 @@ export default function (chatId: string) {
         body: {
           messages: messages.value,
         },
+        headers: useRequestHeaders(['cookie']),
         method: 'POST',
         responseType: 'stream',
       });

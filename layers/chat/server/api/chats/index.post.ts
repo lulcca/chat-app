@@ -1,7 +1,8 @@
-import { CreateChatSchema } from '~~/layers/chat/server/schemas';
-import { createChat } from '~~/layers/chat/server/repository/chat-repository';
+import { CreateChatSchema } from '#layers/chat/server/schemas';
+import { createChat } from '#layers/chat/server/repository/chat-repository';
 
 export default defineEventHandler(async (event) => {
+
   const { success, data } = await readValidatedBody(event, CreateChatSchema.safeParse);
 
   if (!success) throw createError({ statusCode: 400, statusMessage: 'Bad Request' });
@@ -10,7 +11,9 @@ export default defineEventHandler(async (event) => {
 
   const storage = useStorage('db');
 
-  await storage.setItem('chats:has-new-chat', true);
+  const userId = await authenticatedUserId(event);
 
-  return createChat({ projectId, title });
+  await storage.setItem(`chats:has-new-chat:${userId}`, true);
+
+  return createChat({ projectId, title, userId });
 });

@@ -1,7 +1,13 @@
-import { getChatById } from '~~/layers/chat/server/repository/chat-repository';
+import { getChatByIdByUser } from '#layers/chat/server/repository/chat-repository';
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
 
-  return getChatById(id);
+  const userId = await authenticatedUserId(event);
+
+  const chat = await getChatByIdByUser(id, { userId });
+
+  if (!chat) throw createError({ statusCode: 404, statusMessage: 'Chat not found' });
+
+  return chat;
 });

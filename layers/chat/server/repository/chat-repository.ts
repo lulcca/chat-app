@@ -1,8 +1,7 @@
-export async function createChat(data: { projectId?: string, title?: string, userId?: string }): Promise<IChatWithMessages | null> {
+export async function createChat(data: { projectId?: string, title?: string, userId: string }): Promise<IChatWithMessages> {
   return await prisma.chat.create({
     data: {
       ...data,
-      userId: data.userId || '1',
     },
     include: {
       messages: true,
@@ -44,7 +43,7 @@ export async function getAllChats(): Promise<IChatWithMessages[]> {
   });
 }
 
-export async function getAllChatsByUser(userId: string = '1'): Promise<IChatWithMessages[]> {
+export async function getAllChatsByUser(userId: string): Promise<IChatWithMessages[]> {
   return await prisma.chat.findMany({
     include: {
       messages: {
@@ -62,7 +61,7 @@ export async function getAllChatsByUser(userId: string = '1'): Promise<IChatWith
   });
 }
 
-export async function getChatById(id: string): Promise<IChatWithMessages | null> {
+export async function getChatByIdByUser(id: string, data: { userId: string }): Promise<IChatWithMessages | null> {
   return await prisma.chat.findFirst({
     include: {
       messages: {
@@ -73,7 +72,10 @@ export async function getChatById(id: string): Promise<IChatWithMessages | null>
       },
       project: true,
     },
-    where: { id },
+    where: {
+      id,
+      userId: data.userId,
+    },
   });
 }
 
