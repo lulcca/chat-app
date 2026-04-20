@@ -3,13 +3,14 @@ export default function () {
 
   const { data, execute, status } = useFetch<IProject[]>('/api/projects', {
     default: () => [],
+    headers: useRequestHeaders(['cookie']),
     immediate: false,
   });
 
   async function fetchProjects() {
     if (status.value !== 'idle') return;
     await execute();
-    projects.value = data.value;
+    projects.value = data.value || [];
   }
 
   async function createProject() {
@@ -17,6 +18,7 @@ export default function () {
       body: {
         name: 'New Project',
       },
+      headers: useRequestHeaders(['cookie']),
       method: 'POST',
     });
 

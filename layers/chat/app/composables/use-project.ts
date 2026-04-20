@@ -21,6 +21,7 @@ export default function (projectId: string) {
         body: {
           ...updatedProject,
         },
+        headers: useRequestHeaders(['cookie']),
         method: 'PUT',
       });
 

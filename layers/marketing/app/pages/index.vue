@@ -2,11 +2,20 @@
 definePageMeta({ layout: false });
 
 const { title } = useAppConfig();
+const { isAuthenticated } = useAuth();
 
 const { createChatAndNavigate } = useChats();
 
 async function handleCreateChat() {
-  await createChatAndNavigate();
+  try {
+    if (!isAuthenticated.value) return await navigateTo('/login');
+
+    await createChatAndNavigate();
+  } catch(error) {
+    console.error('Failed to handle create chat:', error);
+
+    await navigateTo('/login');
+  }
 }
 </script>
 
@@ -92,7 +101,7 @@ async function handleCreateChat() {
             class="px-8 py-4"
             size="xl"
             variant="outline"
-            @click="handleCreateChat"
+            @click="handleCreateChat()"
           >
             Create A New Chat
           </UButton>

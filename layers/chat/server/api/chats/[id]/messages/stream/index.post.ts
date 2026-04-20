@@ -1,12 +1,18 @@
-import { createMessageForChat, getMessagesByChatId } from '~~/layers/chat/server/repository/chat-repository';
-import { createOpenAIModel, streamChatResponse } from '~~/layers/chat/server/services/ai-service';
+import { createMessageForChat, getChatByIdByUser, getMessagesByChatId } from '#layers/chat/server/repository/chat-repository';
+import { createOpenAIModel, streamChatResponse } from '#layers/chat/server/services/ai-service';
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
 
-  const { openaiApiKey } = useRuntimeConfig();
+  const userId = await authenticatedUserId(event);
+
+  const chat = await getChatByIdByUser(id, { userId });
+
+  if (!chat) throw createError({ statusCode: 404, statusMessage: 'Chat not found' });
 
   const history = await getMessagesByChatId(id);
+
+  const { openaiApiKey } = useRuntimeConfig();
 
   const openai = createOpenAIModel(openaiApiKey);
 
@@ -18,18 +24,18 @@ export default defineEventHandler(async (event) => {
     'Transfer-Encoding': 'chunked',
   });
 
-  let complete_response = '';
+  let completeResponse = '';
 
   const transform_stream = new TransformStream({
     async flush() {
       await createMessageForChat({
         chatId: id,
-        content: complete_response,
+        content: completeResponse,
         role: 'assistant',
       });
     },
     transform(chunk, controller) {
-      complete_response += chunk;
+      completeResponse += chunk;
       controller.enqueue(chunk);
     },
   });
