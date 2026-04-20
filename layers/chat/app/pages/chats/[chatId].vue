@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+definePageMeta({ middleware: 'auth' });
+
 const route = useRoute();
 
 const { chat: chatFromChats, fetchMessages, messages, sendMessage } = useChat(route.params.chatId as string);
