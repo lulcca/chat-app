@@ -1,4 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+definePageMeta({ middleware: 'auth' });
+
 const route = useRoute();
 
 const projectId = route.params.projectId as string;
